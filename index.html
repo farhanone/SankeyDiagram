@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Sankey Diagram</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-sankey@0.12.3/dist/d3-sankey.min.js"></script>
+
+</head>
+
+<body style="background-color: white;">
+    <h1>Tracking Graph (Sankey Diagram) </h1>
+
+    <label for="fname-label">Filename (.csv):</label>
+    <input type="file" id="fname" name="fname" accept=".csv" onchange="customRun()"><br><br>
+
+    <label for="l-colors">Link Color:</label>
+    <select id="link-color" name="link-color" onchange="updateChart()">
+        <option value="#aaa">static</option>
+        <option value="source-target">source-target</option>
+        <option value="source" selected>source</option>
+        <option value="target">target</option>
+    </select><br><br>
+
+    <label for="n-colors">Node Color:</label>
+    <select id="node-color" name="node-color" onchange="updateChart()">
+        <option value="parent">parent</option>
+        <option value="spatial" selected>spatial</option>
+        <option value="level">level</option>
+    </select><br><br>
+
+
+    <label for="level-label">Select Level:</label>
+    <select id="level" name="level" onchange="updateChart()">
+        <option value="0" selected>0</option>
+    </select><br><br>
+
+    <!-- <button onclick="updateChart()">Update</button> -->
+    <div id="default-title">Default chart</div>
+    <div id="sankey-chart"></div>
+    <!-- <script src="inviwo://webbrowser/data/js/inviwoapi.js"></script>
+    <script language="JavaScript">
+        var inviwo = new InviwoAPI();
+        </script> -->
+    <script src="my_sankey.js"></script>
+</body>
+
+</html>
