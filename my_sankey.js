@@ -71,6 +71,11 @@ function _chart(d3, nodeAlign, data, linkColor, nodeColor, level) { // Specify t
   rect.append("title")
     .text(d => `${d.category}\n${d.name}\n${format(d.value)} TWh`);
 
+  // Helper function to generate unique IDs
+  function generateUniqueId(prefix = 'id') {
+    return `${prefix}-${Math.random().toString(36).substr(2, 9)}`;
+  }
+
   // Creates the paths that represent the links.
   const link = svg.append("g")
     .attr("fill", "none")
@@ -83,28 +88,30 @@ function _chart(d3, nodeAlign, data, linkColor, nodeColor, level) { // Specify t
   // Creates a gradient, if necessary, for the source-target color option.
   if (linkColor === "source-target") {
     const gradient = link.append("linearGradient")
-      .attr("id", d => (d.uid = DOM.uid("link")).id)
+      .attr("id", d => (d.uid = generateUniqueId("link")))
       .attr("gradientUnits", "userSpaceOnUse")
       .attr("x1", d => d.source.x1)
       .attr("x2", d => d.target.x0);
+
     gradient.append("stop")
       .attr("offset", "0%")
-      // .attr("stop-color", d => color(d.source.category));
       .attr("stop-color", d => d.source.color);
+
     gradient.append("stop")
       .attr("offset", "100%")
-      // .attr("stop-color", d => color(d.target.category));
       .attr("stop-color", d => d.target.color);
   }
 
   link.append("path")
     .attr("d", d3.sankeyLinkHorizontal())
-    .attr("stroke", linkColor === "source-target" ? (d) => d.uid
-      : linkColor === "source" ? (d) => d.source.color
-        : linkColor === "target" ? (d) => d.target.color
+    .attr("stroke", linkColor === "source-target"
+      ? (d) => `url(#${d.uid})`
+      : linkColor === "source"
+        ? (d) => d.source.color
+        : linkColor === "target"
+          ? (d) => d.target.color
           : linkColor)
     .attr("stroke-width", d => Math.max(1, d.width));
-
   link.append("title")
     .text(d => `${d.source.name} → ${d.target.name}\n${format(d.value)} TWh`);
 
@@ -305,6 +312,7 @@ function parseCSV(csvContent) {
   if (isUpdated) {
     levelSelect.innerHTML = '';
     levels.forEach(option => {
+
       const newOption = document.createElement('option');
       newOption.value = option;
       newOption.textContent = option;
